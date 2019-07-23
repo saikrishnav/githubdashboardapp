@@ -1,6 +1,5 @@
 ﻿import * as httpm from 'typed-rest-client/HttpClient';
 import { ITableItem } from './Table';
-//import { ITableItem } from './TableData';
 
 export class GitHubIssues {
 
