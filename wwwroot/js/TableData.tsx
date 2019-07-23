@@ -1,5 +1,7 @@
 ﻿import * as React from "react";
 
+import { GitHubIssues } from "./githubissues";
+
 //import { ObservableValue } from "azure-devops-ui/Core/Observable";
 //import { ISimpleListCell } from "azure-devops-ui/List";
 //import { MenuItemType } from "azure-devops-ui/Menu";
@@ -59,3 +61,16 @@ export const tableItemsNoIcons = new ArrayItemProvider<ITableItem>(
         return newItem;
     })
 );
+
+let gitHubIssues: GitHubIssues = new GitHubIssues();
+gitHubIssues.GetGitHubIssues();
+
+//export function getWeather(query) {
+//    const endpoint = 'http://api.openweathermap.org/data/2.5/weather?q=London,uk&appid=44db6a862fba0b067b1930da0d769e98';
+//    return this.http
+//        .get(endpoint)//, {search: searchParams})
+//        .map(res => res.json().main)
+//        .subscribe(res => {
+//            this.weather = data;
+//        });
+//}

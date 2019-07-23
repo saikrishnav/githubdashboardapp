@@ -4,9 +4,11 @@
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
-    "target": "es6",
+    "target": "es2015",
     "jsx": "react",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "typeRoots": [ "node_modules/@types" ]
   },
   "exclude": [
     "node_modules",

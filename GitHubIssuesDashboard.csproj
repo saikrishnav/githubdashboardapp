@@ -7,10 +7,13 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\app.tsx" />
+    <Content Remove="wwwroot\js\githubissues.ts" />
     <Content Remove="wwwroot\js\Table.tsx" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Remove="wwwroot\js\githubissues.ts" />
+    <TypeScriptCompile Remove="wwwroot\js\githubissues.tsx" />
     <TypeScriptCompile Remove="wwwroot\js\TableData.tsx" />
   </ItemGroup>
 
