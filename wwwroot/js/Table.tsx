@@ -30,9 +30,9 @@ export default class TableSortableExample extends React.Component {
 
 const columns = [
     {
-        id: "name",
+        id: "repoName",
         minWidth: 50,
-        name: "Name",
+        name: "Repo Name",
         onSize: onSize,
         readonly: true,
         renderCell: renderSimpleCell,
@@ -43,9 +43,9 @@ const columns = [
         width: new ObservableValue(200)
     },
     {
-        id: "age",
+        id: "numIssues",
         maxWidth: 300,
-        name: "Age",
+        name: "Issues",
         onSize: onSize,
         readonly: true,
         renderCell: renderSimpleCell,
@@ -55,13 +55,13 @@ const columns = [
         },
         width: new ObservableValue(100)
     },
-    {
-        id: "gender",
-        name: "Gender",
-        width: new ObservableValue(100),
-        readonly: true,
-        renderCell: renderSimpleCell
-    },
+    //{
+    //    id: "gender",
+    //    name: "Gender",
+    //    width: new ObservableValue(100),
+    //    readonly: true,
+    //    renderCell: renderSimpleCell
+    //},
     ColumnFill
 ];
 
@@ -89,12 +89,12 @@ const sortingBehavior = new ColumnSorting<ITableItem>(
 const sortFunctions = [
     // Sort on Name column
     (item1: ITableItem, item2: ITableItem): number => {
-        return item1.name.text!.localeCompare(item2.name.text!);
+        return item1.repoName!.localeCompare(item2.repoName!);
     },
 
-    // Sort on Age column
+    // Sort on Issues column
     (item1: ITableItem, item2: ITableItem): number => {
-        return item1.age - item2.age;
+        return item1.numIssues - item2.numIssues;
     },
 
     // Gender column does not need a sort function
