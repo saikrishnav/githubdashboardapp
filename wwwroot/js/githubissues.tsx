@@ -1,19 +1,24 @@
-﻿import * as httpm from 'typed-rest-client/HttpClient';
+﻿import * as rm from 'typed-rest-client/RestClient';
 import { ITableItem } from './Table';
 //import { ITableItem } from './TableData';
 
 export class GitHubIssues {
 
-    public async GetGitHubIssues(): Promise<ITableItem[]>
-	{
-		//let rest: httpm.HttpClient = new httpm.HttpClient("DashboardApp");// );
-		//let response: httpm.HttpClientResponse = await rest.get("https://api.github.com/repos/Microsoft/dotnet/issues");
+    private rest: rm.RestClient;
+    private static readonly githubApi: string = "https://api.github.com/";
 
-        //console.log(response);
+    constructor() {
+        this.rest = new rm.RestClient("DashboardApp");
+    }
+
+    public async GetGitHubIssues(): Promise<ITableItem[]>
+    {
+        await this.GetIssuesForRepository("microsoft", "azure-devops-node-api");
+
 
         const rawTableItems: ITableItem[] = [
             {
-                numIssues: 50,
+                numIssues: (await this.GetIssuesForRepository("microsoft", "azure-devops-node-api")).length,
                 repoName: "Borg Cube"
                 //{ iconProps: { render: renderStatus }, text: "Rory Boisvert" }
             },
@@ -34,6 +39,25 @@ export class GitHubIssues {
             },
         ];
         return rawTableItems;
-	}
+    }
 
+    private async GetRepositoriesForOrganization(organization: string)
+    {
+         
+    }
+
+    private async GetIssuesForRepository(organization: string, repository: string): Promise<IGitHubIssue[]>
+    {
+        let issuesApi: string = `repos/${organization}/${repository}/issues`;
+        let response: rm.IRestResponse<IGitHubIssue[]> = await this.rest.get(GitHubIssues.githubApi + issuesApi);
+        console.log(response.result);
+        return response.result;
+    }
+
+ 
+
+}
+
+export interface IGitHubIssue {
+    id: number
 }
