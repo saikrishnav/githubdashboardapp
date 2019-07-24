@@ -2,10 +2,16 @@
 module.exports = {
     mode: 'development',
     entry: { main: './wwwroot/js/app.tsx' },
+    target: 'web',
     output: {
         path: path.resolve(__dirname, './wwwroot/js/dist'),
         filename: 'bundle.js',
         publicPath: 'dist/'
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty',
     },
     resolve: {
         extensions: ['*', '.js', '.jsx', '.tsx']

@@ -1,7 +1,6 @@
-﻿import * as React from "react";
-import { ITableItem, rawTableItems } from "./TableData";
-
+import * as React from "react";
 import { ObservableArray, ObservableValue } from "azure-devops-ui/Core/Observable";
+import { GitHubIssues } from "./githubissues";
 
 import { Card } from "azure-devops-ui/Card";
 import {
@@ -10,10 +9,21 @@ import {
     renderSimpleCell,
     sortItems,
     SortOrder,
-    Table
+    Table,
+    ISimpleTableCell
 } from "azure-devops-ui/Table";
 
-export default class TableSortableExample extends React.Component {
+interface IState {}
+
+export interface ITableItem extends ISimpleTableCell {
+    repoName: string;
+    numIssues: number;
+}
+
+let rawTableItems: ITableItem[] = [];
+const tableItems = new ObservableArray<ITableItem>();
+
+export default class TableSortableExample extends React.Component<{}, IState> {
     public render(): JSX.Element {
         return (
             <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
@@ -22,9 +32,26 @@ export default class TableSortableExample extends React.Component {
                     columns={columns}
                     itemProvider={tableItems}
                     role="table"
+                    scrollable={true}
+                    maxHeight={10}
                 />
             </Card>
         );
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {};
+        this.GetIssues();
+    }
+
+    private async GetIssues(): Promise<void> {
+        let gitHubIssues: GitHubIssues = new GitHubIssues();
+        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues("microsoft");
+        rawTableItems.push(...newTableItems);
+
+        tableItems.push(...rawTableItems);
+        this.setState({});
     }
 }
 
@@ -55,13 +82,6 @@ const columns = [
         },
         width: new ObservableValue(100)
     },
-    //{
-    //    id: "gender",
-    //    name: "Gender",
-    //    width: new ObservableValue(100),
-    //    readonly: true,
-    //    renderCell: renderSimpleCell
-    //},
     ColumnFill
 ];
 
@@ -100,9 +120,6 @@ const sortFunctions = [
     // Gender column does not need a sort function
     null
 ];
-
-// Initialize our table items with the declared items sorted by the Name column ascending.
-const tableItems = new ObservableArray<ITableItem>(rawTableItems);
 
 function onSize(event: MouseEvent, index: number, width: number) {
     (columns[index].width as ObservableValue<number>).value = width;
