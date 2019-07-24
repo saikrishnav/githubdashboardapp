@@ -12,7 +12,7 @@ export class GitHubIssues {
 
     public async GetGitHubIssues(organization: string): Promise<ITableItem[]>
     {
-        let repositories: IGithubRepository[] = await this.GetRepositoriesForOrganization(organization);
+        let repositories: IGithubRepository[] = await this.GetRepositoriesForOrganization(organization, "public", "pushed");
         let tableItems: ITableItem[] = [];
 
         for (const repository of repositories) {
@@ -28,9 +28,10 @@ export class GitHubIssues {
         return tableItems;
     }
 
-    private async GetRepositoriesForOrganization(organization: string): Promise<IGithubRepository[]>
+    private async GetRepositoriesForOrganization(organization: string, repoType: string, sortMethod: string): Promise<IGithubRepository[]>
     {
-        let repositoriesApi: string = `orgs/${organization}/repos`;
+        let repositoriesApi: string = `orgs/${organization}/repos?type=${repoType}&sort=${sortMethod}`;
+       // let options: rm.IRequestOptions = { additionalHeaders: [{"sort" : "pushed"}, {"type" : "public"}] }
         let response: rm.IRestResponse<IGithubRepository[]> = await this.rest.get(GitHubIssues.githubApi + repositoriesApi);
         console.log(response.result);
         return response.result;
