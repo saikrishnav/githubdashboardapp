@@ -17,6 +17,7 @@ interface IState {}
 
 export interface ITableItem extends ISimpleTableCell {
     repoName: string;
+    repoLink: string;
     numIssues: number;
 }
 
@@ -42,12 +43,12 @@ export default class TableSortableExample extends React.Component<{}, IState> {
     constructor(props) {
         super(props);
         this.state = {};
-        this.GetIssues();
+        this.GetIssues("microsoft");
     }
 
-    private async GetIssues(): Promise<void> {
+    private async GetIssues(organization: string): Promise<void> {
         let gitHubIssues: GitHubIssues = new GitHubIssues();
-        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues("microsoft");
+        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues(organization);
         rawTableItems.push(...newTableItems);
 
         tableItems.push(...rawTableItems);

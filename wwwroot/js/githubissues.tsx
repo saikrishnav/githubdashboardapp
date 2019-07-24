@@ -16,9 +16,11 @@ export class GitHubIssues {
         let tableItems: ITableItem[] = [];
 
         for (const repository of repositories) {
+            let repositoryIssues: IGitHubIssue[] = await this.GetIssuesForRepository(organization, repository.name);
             tableItems.push(
                 {
-                    numIssues: (await this.GetIssuesForRepository(organization, repository.name)).length,
+                    numIssues: repositoryIssues.length,
+                    repoLink: repository.html_url,
                     repoName: repository.name
                 });
         }
@@ -52,4 +54,5 @@ export interface IGitHubIssue {
 
 export interface IGithubRepository {
     name: string;
+    html_url: string;
 }
