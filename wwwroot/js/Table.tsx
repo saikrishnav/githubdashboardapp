@@ -24,20 +24,20 @@ export interface ITableItem extends ISimpleTableCell {
 
 let rawTableItems: ITableItem[] = [];
 let tableItems = new ObservableArray<ITableItem | ObservableValue<ITableItem | undefined>>
-    (new Array(5).fill(new ObservableValue<ITableItem | undefined>(undefined)));
+    (new Array().fill(new ObservableValue<ITableItem | undefined>(undefined)));
 
 export default class TableSortableExample extends React.Component<{}, IState> {
     public render(): JSX.Element {
         return (
-            <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: true }}>
-                <Table<ITableItem>
-                    behaviors={[sortingBehavior]}
-                    columns={asyncColumns}
-                    itemProvider={tableItems}
-                    role="table"
-                    scrollable={true}                    
-                />
-            </Card>
+                <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: true }}>
+                        <Table<ITableItem>
+                            behaviors={[sortingBehavior]}
+                            columns={asyncColumns}
+                            itemProvider={tableItems}
+                            role="table"
+                            scrollable={true}
+                            />
+                </Card>
         );
     }
 
