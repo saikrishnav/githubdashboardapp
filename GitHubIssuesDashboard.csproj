@@ -29,9 +29,6 @@
 
 
   <ItemGroup>
-    <Content Update="wwwroot\js\Table.js">
-      <DependentUpon>Table.tsx</DependentUpon>
-    </Content>
     <Content Update="wwwroot\js\Table.js.map">
       <DependentUpon>Table.js</DependentUpon>
     </Content>
