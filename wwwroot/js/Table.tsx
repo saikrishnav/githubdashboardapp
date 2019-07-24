@@ -10,7 +10,8 @@ import {
     sortItems,
     SortOrder,
     Table,
-    ISimpleTableCell
+    ISimpleTableCell,
+    TableColumnLayout
 } from "azure-devops-ui/Table";
 
 interface IState {}
@@ -22,19 +23,19 @@ export interface ITableItem extends ISimpleTableCell {
 }
 
 let rawTableItems: ITableItem[] = [];
-const tableItems = new ObservableArray<ITableItem>();
+let tableItems = new ObservableArray<ITableItem | ObservableValue<ITableItem | undefined>>
+    (new Array(5).fill(new ObservableValue<ITableItem | undefined>(undefined)));
 
 export default class TableSortableExample extends React.Component<{}, IState> {
     public render(): JSX.Element {
         return (
-            <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
+            <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: true }}>
                 <Table<ITableItem>
                     behaviors={[sortingBehavior]}
-                    columns={columns}
+                    columns={asyncColumns}
                     itemProvider={tableItems}
                     role="table"
-                    scrollable={true}
-                    maxHeight={10}
+                    scrollable={true}                    
                 />
             </Card>
         );
@@ -51,15 +52,17 @@ export default class TableSortableExample extends React.Component<{}, IState> {
         let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues(organization);
         rawTableItems.push(...newTableItems);
 
+        tableItems.removeAll();
         tableItems.push(...rawTableItems);
         this.setState({});
     }
 }
 
-const columns = [
+let asyncColumns = [
     {
+        columnLayout: TableColumnLayout.singleLinePrefix,
         id: "repoName",
-        minWidth: 50,
+        maxWidth: 300,
         name: "Repo Name",
         onSize: onSize,
         readonly: true,
@@ -68,11 +71,12 @@ const columns = [
             ariaLabelAscending: "Sorted A to Z",
             ariaLabelDescending: "Sorted Z to A"
         },
-        width: new ObservableValue(200)
+        width: new ObservableValue(300)
     },
     {
+        columnLayout: TableColumnLayout.none,
         id: "numIssues",
-        maxWidth: 300,
+        maxWidth: 100,
         name: "Issues",
         onSize: onSize,
         readonly: true,
@@ -100,7 +104,7 @@ const sortingBehavior = new ColumnSorting<ITableItem>(
                 columnIndex,
                 proposedSortOrder,
                 sortFunctions,
-                columns,
+                asyncColumns,
                 rawTableItems
             )
         );
@@ -123,5 +127,5 @@ const sortFunctions = [
 ];
 
 function onSize(event: MouseEvent, index: number, width: number) {
-    (columns[index].width as ObservableValue<number>).value = width;
+    (asyncColumns[index].width as ObservableValue<number>).value = width;
 }
