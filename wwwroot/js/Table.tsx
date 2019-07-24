@@ -44,12 +44,12 @@ export default class TableSortableExample extends React.Component<{}, IState> {
     constructor(props) {
         super(props);
         this.state = {};
-        this.GetIssues("microsoft", 1);
+        this.GetIssues(1);
     }
 
-    private async GetIssues(organization: string, page: number): Promise<void> {
+    private async GetIssues(page: number): Promise<void> {
         let gitHubIssues: GitHubIssues = new GitHubIssues();
-        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues(organization, page);
+        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues(page);
         rawTableItems.push(...newTableItems);
 
         tableItems.removeAll();

@@ -9,14 +9,18 @@ export class GitHubIssues {
     private static readonly GITHUB_BASE_URL: string = "https://github.com/";
     private static readonly DEFAULT_ORGANIZATION: string = "microsoft";
 
+    private organization: string;
+
     constructor() {
         this.rest = new rm.RestClient("DashboardApp");
-        this.GetCurrentOrganization();
+        this.organization = this.GetCurrentOrganization();
+        console.log("organization: " + this.organization);
     }
 
-    public async GetGitHubIssues(organization: string, page: number): Promise<ITableItem[]>
+    public async GetGitHubIssues(page: number): Promise<ITableItem[]>
     {
-        let repositories: IGithubRepository[] = await this.GetRepositoriesForOrganization(organization, "public", "pushed", page);
+        console.log("Fetching Issues for: " + this.organization);
+        let repositories: IGithubRepository[] = await this.GetRepositoriesForOrganization(this.organization, "public", "pushed", page);
         let tableItems: ITableItem[] = [];
 
         for (const repository of repositories) {
@@ -45,8 +49,8 @@ export class GitHubIssues {
             return GitHubIssues.DEFAULT_ORGANIZATION;
         }
         const splitUrl: string[] = url.split("/");
-        console.log("organization: " + splitUrl[splitUrl.length - 1]);
-        return splitUrl[splitUrl.length - 1];
+        const orgName = splitUrl[splitUrl.length - 1].split("?")[0];
+        return orgName;
     }
 
     private async GetRepositoriesForOrganization(organization: string, repoType: string, sortMethod: string, page: number): Promise<IGithubRepository[]>
