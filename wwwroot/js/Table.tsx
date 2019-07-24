@@ -1,6 +1,4 @@
-﻿import * as React from "react";
-//import { ITableItem, rawTableItems } from "./TableData";
-
+import * as React from "react";
 import { ObservableArray, ObservableValue } from "azure-devops-ui/Core/Observable";
 import { GitHubIssues } from "./githubissues";
 
@@ -14,26 +12,25 @@ import {
     Table,
     ISimpleTableCell
 } from "azure-devops-ui/Table";
-import { ArrayItemProvider } from "azure-devops-ui/Utilities/Provider";
 
-interface IState {
-    tableItems: ITableItem[];
-}
+interface IState {}
 
 export interface ITableItem extends ISimpleTableCell {
     repoName: string;
     numIssues: number;
-    //gender: string;
 }
 
-export default class TableSortableExample extends React.Component<{}, IState>{
+let rawTableItems: ITableItem[] = [];
+const tableItems = new ObservableArray<ITableItem>();
+
+export default class TableSortableExample extends React.Component<{}, IState> {
     public render(): JSX.Element {
         return (
             <Card className="flex-grow bolt-table-card" contentProps={{ contentPadding: false }}>
                 <Table<ITableItem>
-                    behaviors={[this.sortingBehavior]}
+                    behaviors={[sortingBehavior]}
                     columns={columns}
-                    itemProvider={new ArrayItemProvider(this.state.tableItems)}
+                    itemProvider={tableItems}
                     role="table"
                 />
             </Card>
@@ -42,40 +39,18 @@ export default class TableSortableExample extends React.Component<{}, IState>{
 
     constructor(props) {
         super(props);
-        this.state = {
-            tableItems: []
-        };
-
+        this.state = {};
         this.GetIssues();
     }
 
     private async GetIssues(): Promise<void> {
-        let gitHubIssues: GitHubIssues = new GitHubIssues();        
-        const tableItems = await gitHubIssues.GetGitHubIssues("microsoft");
-        this.setState({ tableItems });
-    }
+        let gitHubIssues: GitHubIssues = new GitHubIssues();
+        let newTableItems: ITableItem[] = await gitHubIssues.GetGitHubIssues("microsoft");
+        rawTableItems.push(...newTableItems);
 
-    //function GetSortingBehavior(tableItems: ITableItem[]): ColumnSorting<ITableItem> {
-    // Create the sorting behavior (delegate that is called when a column is sorted).
-    readonly sortingBehavior = new ColumnSorting<ITableItem>(
-        (
-            columnIndex: number,
-            proposedSortOrder: SortOrder,
-            event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>
-        ) => {
-            this.state.tableItems.splice(
-                0,
-                this.state.tableItems.length,
-                ...sortItems<ITableItem>(
-                    columnIndex,
-                    proposedSortOrder,
-                    sortFunctions,
-                    columns,
-                    this.state.tableItems // used to be rawTableItems
-                )
-            );
-        }
-    );
+        tableItems.push(...rawTableItems);
+        this.setState({});
+    }
 }
 
 const columns = [
@@ -105,38 +80,29 @@ const columns = [
         },
         width: new ObservableValue(100)
     },
-    //{
-    //    id: "gender",
-    //    name: "Gender",
-    //    width: new ObservableValue(100),
-    //    readonly: true,
-    //    renderCell: renderSimpleCell
-    //},
     ColumnFill
 ];
 
-function GetSortingBehavior(tableItems: ITableItem[]): ColumnSorting<ITableItem> {
-    // Create the sorting behavior (delegate that is called when a column is sorted).
-    return new ColumnSorting<ITableItem>(
-        (
-            columnIndex: number,
-            proposedSortOrder: SortOrder,
-            event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>
-        ) => {
-            tableItems.splice(
-                0,
-                tableItems.length,
-                ...sortItems<ITableItem>(
-                    columnIndex,
-                    proposedSortOrder,
-                    sortFunctions,
-                    columns,
-                    tableItems // used to be rawTableItems
-                )
-            );
-        }
-    );
-}
+// Create the sorting behavior (delegate that is called when a column is sorted).
+const sortingBehavior = new ColumnSorting<ITableItem>(
+    (
+        columnIndex: number,
+        proposedSortOrder: SortOrder,
+        event: React.KeyboardEvent<HTMLElement> | React.MouseEvent<HTMLElement>
+    ) => {
+        tableItems.splice(
+            0,
+            tableItems.length,
+            ...sortItems<ITableItem>(
+                columnIndex,
+                proposedSortOrder,
+                sortFunctions,
+                columns,
+                rawTableItems
+            )
+        );
+    }
+);
 
 const sortFunctions = [
     // Sort on Name column
@@ -152,9 +118,6 @@ const sortFunctions = [
     // Gender column does not need a sort function
     null
 ];
-
-// Initialize our table items with the declared items sorted by the Name column ascending.
-//const tableItems = new ObservableArray<ITableItem>(rawTableItems);
 
 function onSize(event: MouseEvent, index: number, width: number) {
     (columns[index].width as ObservableValue<number>).value = width;
