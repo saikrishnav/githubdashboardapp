@@ -1,6 +1,5 @@
 ﻿import * as rm from 'typed-rest-client/RestClient';
 import { ITableItem } from './Table';
-//import { ITableItem } from './TableData';
 
 export class GitHubIssues {
 
@@ -11,39 +10,28 @@ export class GitHubIssues {
         this.rest = new rm.RestClient("DashboardApp");
     }
 
-    public async GetGitHubIssues(): Promise<ITableItem[]>
+    public async GetGitHubIssues(organization: string): Promise<ITableItem[]>
     {
-        await this.GetIssuesForRepository("microsoft", "azure-devops-node-api");
+        let repositories: IGithubRepository[] = await this.GetRepositoriesForOrganization(organization);
+        let tableItems: ITableItem[] = [];
 
+        for (const repository of repositories) {
+            tableItems.push(
+                {
+                    numIssues: (await this.GetIssuesForRepository(organization, repository.name)).length,
+                    repoName: repository.name
+                });
+        }
 
-        const rawTableItems: ITableItem[] = [
-            {
-                numIssues: (await this.GetIssuesForRepository("microsoft", "azure-devops-node-api")).length,
-                repoName: "Borg Cube"
-                //{ iconProps: { render: renderStatus }, text: "Rory Boisvert" }
-            },
-            {
-                numIssues: 49,
-                repoName: "Darth Vader"
-                //repoName: { iconProps: { iconName: "Home", ariaLabel: "Home" }, text: "Sharon Monroe" }
-            },
-            {
-                numIssues: 18,
-                repoName: "Lord Voldemort"
-                //repoName: { iconProps: { iconName: "Home", ariaLabel: "Home" }, text: "Lucy Booth" }
-            },
-            {
-                numIssues: 100,
-                repoName: "Species 8472"
-                //{ iconProps: { render: renderStatus }, text: "Rory Boisvert" }
-            },
-        ];
-        return rawTableItems;
+        return tableItems;
     }
 
-    private async GetRepositoriesForOrganization(organization: string)
+    private async GetRepositoriesForOrganization(organization: string): Promise<IGithubRepository[]>
     {
-         
+        let repositoriesApi: string = `orgs/${organization}/repos`;
+        let response: rm.IRestResponse<IGithubRepository[]> = await this.rest.get(GitHubIssues.githubApi + repositoriesApi);
+        console.log(response.result);
+        return response.result;
     }
 
     private async GetIssuesForRepository(organization: string, repository: string): Promise<IGitHubIssue[]>
@@ -59,5 +47,9 @@ export class GitHubIssues {
 }
 
 export interface IGitHubIssue {
-    id: number
+   
+}
+
+export interface IGithubRepository {
+    name: string;
 }

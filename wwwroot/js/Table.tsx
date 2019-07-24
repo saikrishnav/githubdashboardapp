@@ -51,7 +51,7 @@ export default class TableSortableExample extends React.Component<{}, IState>{
 
     private async GetIssues(): Promise<void> {
         let gitHubIssues: GitHubIssues = new GitHubIssues();        
-        const tableItems = await gitHubIssues.GetGitHubIssues();
+        const tableItems = await gitHubIssues.GetGitHubIssues("microsoft");
         this.setState({ tableItems });
     }
 
