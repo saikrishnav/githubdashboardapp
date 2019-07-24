@@ -31,5 +31,5 @@ ReactDOM.render(
     <SurfaceContext.Provider value={{ background: SurfaceBackground.neutral }}>
         <Table />
     </SurfaceContext.Provider>,
-    document.getElementById("table")
+    document.getElementById("issueDashboard")
 );
