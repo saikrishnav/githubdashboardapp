@@ -11,8 +11,12 @@ import {
     SortOrder,
     Table,
     ISimpleTableCell,
-    TableColumnLayout
+    TableColumnLayout,
+    ITableColumn,
+    SimpleTableCell
 } from "azure-devops-ui/Table";
+
+import { Link } from "azure-devops-ui/Link";
 
 interface IState {}
 
@@ -20,6 +24,7 @@ export interface ITableItem extends ISimpleTableCell {
     repoName: string;
     repoLink: string;
     numIssues: number;
+    issuesLink: string;
 }
 
 let rawTableItems: ITableItem[] = [];
@@ -66,7 +71,7 @@ let asyncColumns = [
         name: "Repo Name",
         onSize: onSize,
         readonly: true,
-        renderCell: renderSimpleCell,
+        renderCell: renderName,
         sortProps: {
             ariaLabelAscending: "Sorted A to Z",
             ariaLabelDescending: "Sorted Z to A"
@@ -80,7 +85,7 @@ let asyncColumns = [
         name: "Issues",
         onSize: onSize,
         readonly: true,
-        renderCell: renderSimpleCell,
+        renderCell: renderIssues,
         sortProps: {
             ariaLabelAscending: "Sorted low to high",
             ariaLabelDescending: "Sorted high to low"
@@ -128,4 +133,64 @@ const sortFunctions = [
 
 function onSize(event: MouseEvent, index: number, width: number) {
     (asyncColumns[index].width as ObservableValue<number>).value = width;
+}
+
+function renderName(
+    rowIndex: number,
+    columnIndex: number,
+    tableColumn: ITableColumn<ITableItem>,
+    tableItem: ITableItem
+): JSX.Element {
+    const { repoName, repoLink } = tableItem;
+    return (
+        <SimpleTableCell
+            className="bolt-table-cell-content-with-inline-link no-v-padding"
+            key={"col-" + columnIndex}
+            columnIndex={columnIndex}
+            tableColumn={tableColumn}
+            children= {
+                <>
+                    <Link
+                        className="fontSizeMS font-size-ms secondary-text bolt-table-link bolt-table-inline-link"
+                        excludeTabStop
+                        href={repoLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {repoName}
+                    </Link>
+                </>
+            }
+        />
+    );
+}
+
+function renderIssues(
+    rowIndex: number,
+    columnIndex: number,
+    tableColumn: ITableColumn<ITableItem>,
+    tableItem: ITableItem
+): JSX.Element {
+    const { numIssues, issuesLink } = tableItem;
+    return (
+        <SimpleTableCell
+            className="bolt-table-cell-content-with-inline-link no-v-padding"
+            key={"col-" + columnIndex}
+            columnIndex={columnIndex}
+            tableColumn={tableColumn}
+            children={
+                <>
+                    <Link
+                        className="fontSizeMS font-size-ms secondary-text bolt-table-link bolt-table-inline-link"
+                        excludeTabStop
+                        href={issuesLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {numIssues}
+                    </Link>
+                </>
+            }
+        />
+    );
 }

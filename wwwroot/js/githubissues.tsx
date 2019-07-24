@@ -28,7 +28,8 @@ export class GitHubIssues {
                 {
                     numIssues: repository.open_issues_count,
                     repoLink: repository.html_url,
-                    repoName: repository.name
+                    repoName: repository.name,
+                    issuesLink: repository.html_url.concat("/issues")
                 });
         }
 
@@ -81,6 +82,7 @@ export interface IGithubRepository {
     name: string;
     html_url: string;
     open_issues_count: number;
+    issues_url: string;
 }
 
 export interface IGitHubOrganization {
