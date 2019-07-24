@@ -29,13 +29,6 @@
 
 
   <ItemGroup>
-    <Content Update="wwwroot\js\Table.js.map">
-      <DependentUpon>Table.js</DependentUpon>
-    </Content>
-  </ItemGroup>
-
-
-  <ItemGroup>
     <TypeScriptCompile Update="wwwroot\js\Table.tsx">
       <SubType>Code</SubType>
     </TypeScriptCompile>
