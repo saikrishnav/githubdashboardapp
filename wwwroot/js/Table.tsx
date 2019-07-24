@@ -32,6 +32,8 @@ export default class TableSortableExample extends React.Component<{}, IState> {
                     columns={columns}
                     itemProvider={tableItems}
                     role="table"
+                    scrollable={true}
+                    maxHeight={10}
                 />
             </Card>
         );
