@@ -1,35 +1,26 @@
-﻿//import * as React from "react";
-//import * as ReactDOM from "react-dom";
-//import { List } from "./List";
-//import { ListItemProps } from "./ListItem";
-//const items: ListItemProps[] = [
-//    { name: 'Luke Szklarz', rank: 1, points: 5758 },
-//    { name: 'Rayan Isran', rank: 2, points: 5743 },
-//    { name: 'Daniel Coelho', rank: 3, points: 5722 },
-//    { name: 'David Clemens', rank: 4, points: 5699 },
-//    { name: 'Marc Rützou', rank: 5, points: 5633 },
-//    { name: 'Bryan Bosshardt', rank: 6, points: 5566 },
-//    { name: 'Karl Jobst', rank: 7, points: 5510 },
-//    { name: 'Dan Parker', rank: 8, points: 5449 },
-//    { name: 'Ryan White', rank: 9, points: 5343 },
-//    { name: 'Jim Barrett', rank: 10, points: 5312 }
-//];
-//ReactDOM.render(
-//    <List items={items} />,
-//    document.getElementById("example")
-//);
-
-
-import * as React from "react";
+﻿import * as React from "react";
 import * as ReactDOM from "react-dom";
 import Table from "./Table";
 import "./iconFont.css";
 
 import { SurfaceBackground, SurfaceContext } from "azure-devops-ui/Surface";
 
-ReactDOM.render(
-    <SurfaceContext.Provider value={{ background: SurfaceBackground.neutral }}>
-        <Table />
-    </SurfaceContext.Provider>,
-    document.getElementById("issueDashboard")
-);
+var doc = document.getElementById("org-repositories");
+var demo = document.getElementById("DemoAppMode");
+if (doc || demo) {
+    ReactDOM.render(
+        <SurfaceContext.Provider value={{ background: SurfaceBackground.neutral }}>
+            <Table />
+        </SurfaceContext.Provider>,
+        document.getElementById("issueDashboard")
+    );
+
+    var dashboard = document.getElementById("issueDashboard")
+    var cards = dashboard.getElementsByClassName("flex-grow bolt-table-card bolt-card flex-column depth-8 bolt-card-white");
+    if (cards && cards[0] && cards[0] instanceof HTMLElement) {
+        (cards[0] as HTMLElement).style.height = "500px";
+    }
+}
+
+var azureDevOpsStyle = document.head.getElementsByTagName("style")[0]
+azureDevOpsStyle.innerHTML = azureDevOpsStyle.innerHTML.replace("display: flex;", "")
